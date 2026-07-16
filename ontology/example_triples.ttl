@@ -1,0 +1,11 @@
+@prefix ex: <http://example.org/diagram#> .
+
+ex:Valve_001 a ex:Valve ;
+    ex:label "V-203" ;
+    ex:confidence "0.81" .
+
+ex:Pipe_001 a ex:ProcessFlow ;
+    ex:source ex:Pump_001 ;
+    ex:target ex:Valve_001 ;
+    ex:confidence "0.67" .
+

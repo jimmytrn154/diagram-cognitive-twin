@@ -1,0 +1,18 @@
+# Core environment
+numpy
+pandas
+matplotlib
+opencv-python
+Pillow
+jupyter
+notebook
+
+# Modeling and vision
+torch
+torchvision
+transformers
+open_clip_torch
+
+# OCR and app
+pytesseract
+streamlit

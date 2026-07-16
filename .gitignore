@@ -1,0 +1,65 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Build and packaging artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# IDE and OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local environment files
+.env
+.env.*
+messi
+
+# Large or generated project artifacts
+checkpoints/
+data/raw/*
+data/processed/*
+data/samples/*
+data/synthetic_simulink/*
+outputs/masks/*
+outputs/crops/*
+outputs/overlays/*
+outputs/graphs/*
+outputs/reports/*
+
+# Keep scaffold placeholders
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/samples/.gitkeep
+!data/synthetic_simulink/.gitkeep
+!outputs/masks/.gitkeep
+!outputs/crops/.gitkeep
+!outputs/overlays/.gitkeep
+!outputs/graphs/.gitkeep
+!outputs/reports/.gitkeep
