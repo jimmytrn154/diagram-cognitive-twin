@@ -1,0 +1,32 @@
+{
+  "image_name": "9_640_640.jpg",
+  "image_path": "C:\\Users\\jimmy\\Downloads\\pidset\\images (3)\\9_640_640.jpg",
+  "model_name": "yolo11n.pt",
+  "run_stage": "pretrain",
+  "predictions": [
+    {
+      "run_stage": "pretrain",
+      "class_id": 75,
+      "class_name": "class_75",
+      "confidence": 0.7749635577201843,
+      "bbox_xyxy": [
+        802.5629272460938,
+        246.105224609375,
+        916.7206420898438,
+        361.955078125
+      ]
+    },
+    {
+      "run_stage": "pretrain",
+      "class_id": 75,
+      "class_name": "class_75",
+      "confidence": 0.2908499836921692,
+      "bbox_xyxy": [
+        919.59619140625,
+        121.85516357421875,
+        962.787841796875,
+        194.91632080078125
+      ]
+    }
+  ]
+}

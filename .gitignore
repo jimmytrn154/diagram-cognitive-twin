@@ -52,6 +52,7 @@ outputs/crops/*
 outputs/overlays/*
 outputs/graphs/*
 outputs/reports/*
+outputs/detection/*
 
 # Keep scaffold placeholders
 !data/raw/.gitkeep
@@ -63,3 +64,10 @@ outputs/reports/*
 !outputs/overlays/.gitkeep
 !outputs/graphs/.gitkeep
 !outputs/reports/.gitkeep
+!outputs/detection/
+!outputs/detection/overlays/
+!outputs/detection/overlays/.gitkeep
+!outputs/detection/reports/
+!outputs/detection/reports/.gitkeep
+!outputs/detection/runs/
+!outputs/detection/runs/.gitkeep
