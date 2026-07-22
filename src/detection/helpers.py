@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections import Counter
 from pathlib import Path
 import json
+import os
+import shutil
 
 import cv2
 import numpy as np
@@ -168,48 +170,66 @@ def materialize_zero_based_detection_dataset(
 ) -> dict[str, Path]:
     image_dir = dataset_root / "images (3)"
     label_dir = dataset_root / "labels (2)"
-    prepared_labels_dir = prepared_root / "labels_zero_based"
-    prepared_splits_dir = prepared_root / "splits"
-    prepared_labels_dir.mkdir(parents=True, exist_ok=True)
-    prepared_splits_dir.mkdir(parents=True, exist_ok=True)
+    prepared_images_train = prepared_root / "images" / "train"
+    prepared_images_val = prepared_root / "images" / "val"
+    prepared_labels_train = prepared_root / "labels" / "train"
+    prepared_labels_val = prepared_root / "labels" / "val"
+
+    for directory in [prepared_images_train, prepared_images_val, prepared_labels_train, prepared_labels_val]:
+        directory.mkdir(parents=True, exist_ok=True)
 
     train_names = read_split_file(train_split_path)
     val_names = read_split_file(val_split_path)
-    all_names = sorted(set(train_names + val_names))
 
-    for image_name in all_names:
-        source_label = label_path_from_name(label_dir, image_name)
-        target_label = prepared_labels_dir / source_label.name
-        if source_label.exists():
-            target_label.write_text(_remap_annotation_text(source_label.read_text()))
-        else:
-            target_label.write_text("")
+    def _link_or_copy_image(source_path: Path, target_path: Path) -> None:
+        if target_path.exists():
+            return
+        try:
+            os.link(source_path, target_path)
+        except OSError:
+            shutil.copy2(source_path, target_path)
 
-    train_images_txt = prepared_splits_dir / "train_images.txt"
-    val_images_txt = prepared_splits_dir / "val_images.txt"
-    train_images_txt.write_text("\n".join(str(image_path_from_name(image_dir, name)) for name in train_names) + "\n")
-    val_images_txt.write_text("\n".join(str(image_path_from_name(image_dir, name)) for name in val_names) + "\n")
+    def _materialize_split(split_names: list[str], image_target_dir: Path, label_target_dir: Path) -> None:
+        for image_name in split_names:
+            source_image = image_path_from_name(image_dir, image_name)
+            source_label = label_path_from_name(label_dir, image_name)
+            target_image = image_target_dir / image_name
+            target_label = label_target_dir / f"{Path(image_name).stem}.txt"
+
+            if source_image.exists():
+                _link_or_copy_image(source_image, target_image)
+            else:
+                raise FileNotFoundError(f"Missing source image for detector workspace: {source_image}")
+
+            if source_label.exists():
+                target_label.write_text(_remap_annotation_text(source_label.read_text()))
+            else:
+                target_label.write_text("")
+
+    _materialize_split(train_names, prepared_images_train, prepared_labels_train)
+    _materialize_split(val_names, prepared_images_val, prepared_labels_val)
 
     return {
         "image_dir": image_dir,
         "raw_label_dir": label_dir,
-        "prepared_labels_dir": prepared_labels_dir,
-        "train_images_txt": train_images_txt,
-        "val_images_txt": val_images_txt,
+        "prepared_images_train": prepared_images_train,
+        "prepared_images_val": prepared_images_val,
+        "prepared_labels_train": prepared_labels_train,
+        "prepared_labels_val": prepared_labels_val,
     }
 
 
 def write_ultralytics_dataset_yaml(
     dataset_yaml_path: Path,
-    train_images_txt: Path,
-    val_images_txt: Path,
+    train_images_dir: Path,
+    val_images_dir: Path,
     class_name_map: dict[int, str],
 ) -> None:
     names = [class_name_map[class_id] for class_id in sorted(class_name_map)]
     payload = {
         "path": str(dataset_yaml_path.parent.resolve()),
-        "train": str(train_images_txt.resolve()),
-        "val": str(val_images_txt.resolve()),
+        "train": str(train_images_dir.resolve()),
+        "val": str(val_images_dir.resolve()),
         "nc": len(names),
         "names": names,
     }
